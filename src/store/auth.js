@@ -1,0 +1,67 @@
+import axios from "axios";
+import router from "@/router";
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
+
+const auth = {
+    namespaced: true,
+    state: {
+        user: null,
+        loggedIn: false,
+        token: localStorage.getItem("token") || "",
+        loading: false,
+    },
+    getters: {},
+    mutations: {
+        setUser(state, user) {
+            state.user = user;
+            state.loggedIn = Boolean(user);
+            state.token = localStorage.getItem("token") || "";
+        },
+        openLoading(state) {
+            state.loading = true;
+        },
+        closeLoading(state) {
+            state.loading = false;
+        }
+    },
+    actions: {
+        async login({ dispatch, commit }, credentials) {
+            commit("openLoading");
+            await axios.get("sanctum/csrf-cookie");
+            await axios.post("api/login", credentials).then(async (res) => {
+                localStorage.setItem('token', res.data.token)
+                await dispatch("getProfile", res.data.token);
+                await router.push({ path: "/" });
+            }).catch(() => {
+                commit("closeLoading");
+            });
+        },
+        async logout({ commit }) {
+            commit("openLoading", null, { root: true });
+            await axios.post("api/logout").then(async () => {
+                localStorage.removeItem('token')
+                commit("setUser", null);
+                await router.push({ path: "/login" });
+                commit("closeLoading", null, { root: true });
+            }).catch(() => {
+                commit("closeLoading", null, { root: true });
+            });
+        },
+        async getProfile({ commit }, token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+            await axios.get("sanctum/csrf-cookie");
+            await axios
+                .get("api/user")
+                .then((res) => {
+                    commit("setUser", res.data);
+                })
+                .catch(() => {
+                    commit("setUser", null);
+                });
+            commit("closeLoading");
+        },
+    },
+};
+
+export default auth
