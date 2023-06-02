@@ -10,6 +10,8 @@ const assets = {
         loading: false,
         selectAsset: null | [],
         created: false,
+        showAddImage: false,
+        loadingImage: false,
     },
     getters: {
         getAssets(state) {
@@ -94,6 +96,64 @@ const assets = {
                 });
             commit("clearLoading");
         },
+        async deleteAsset({ commit }, id) {
+            commit("setLoading");
+            await axios
+                .delete(`api/deleteAsset/${id}`)
+                .then((res) => {
+                    commit("removeAsset", id)
+                    commit("alert/setAlert",
+                        { message: res.data.msg, status: "success" },
+                        { root: true });
+                })
+                .catch(() => {
+                    commit("alert/setAlert",
+                        { message: 'Error al eliminar', status: "error" },
+                        { root: true });
+                });
+            commit("clearLoading");
+        },
+        async createImage({ commit }, data) {
+            commit("setLoadingImage");
+            await axios
+                .post("api/createImage", data, {
+                    headers: {
+                        'accept': 'application/json',
+                        'Accept-Language': 'en-US,en;q=0.8',
+                        'content-type': 'multipart/form-data',
+                    }
+                })
+                .then((res) => {
+                    commit("addAssetImage", res.data.image)
+                    commit("closeAddImageDialog")
+                    commit("alert/setAlert",
+                        { message: res.data.msg, status: "success" },
+                        { root: true });
+                })
+                .catch(() => {
+                    commit("alert/setAlert",
+                        { message: 'Error al eliminar', status: "error" },
+                        { root: true });
+                });
+            commit("clearLoadingImage");
+        },
+        async removeImage({ commit }, id) {
+            commit("setLoadingImage");
+            await axios
+                .delete(`api/deleteImage/${id}`)
+                .then((res) => {
+                    commit("deleteAssetImage", res.data.image)
+                    commit("alert/setAlert",
+                        { message: res.data.msg, status: "success" },
+                        { root: true });
+                })
+                .catch(() => {
+                    commit("alert/setAlert",
+                        { message: 'Error al eliminar', status: "error" },
+                        { root: true });
+                });
+            commit("clearLoadingImage");
+        },
     },
     mutations: {
         setAssets(state, assets) {
@@ -120,6 +180,43 @@ const assets = {
             state.entities = {
                 ...entities,
             };
+        },
+        showAddImageDialog(state) {
+            state.showAddImage = true;
+        },
+        closeAddImageDialog(state) {
+            state.showAddImage = false;
+        },
+        setLoadingImage(state) {
+            state.loadingImage = true;
+        },
+        clearLoadingImage(state) {
+            state.loadingImage = false;
+        },
+        addAssetImage(state, image) {
+            if (state.selectAsset) {
+                state.selectAsset = {
+                    ...state.selectAsset,
+                    images: [image, ...state.selectAsset.images],
+                };
+
+                if (state.entities) {
+                    state.entities[state.selectAsset.id] = {
+                        ...state.entities[state.selectAsset.id],
+                        images: [image, ...state.entities[state.selectAsset.id].images],
+                    };
+                }
+            }
+        },
+        deleteAssetImage(state, image) {
+            if (state.selectAsset) {
+                state.selectAsset = {
+                    ...state.selectAsset,
+                    images: state.selectAsset.images.filter((key) => {
+                        return key.id !== image.id;
+                    }),
+                };
+            }
         },
     },
 };
