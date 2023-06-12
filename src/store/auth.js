@@ -33,7 +33,10 @@ const auth = {
                 localStorage.setItem('token', res.data.token)
                 await dispatch("getProfile", res.data.token);
                 await router.push({ path: "/" });
-            }).catch(() => {
+            }).catch((error) => {
+                commit("alert/setAlert",
+                    { message: "Credenciales incorrectas", status: "error" },
+                    { root: true });
                 commit("closeLoading");
             });
         },

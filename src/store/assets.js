@@ -27,7 +27,7 @@ const assets = {
                 .get("api/fetchAssets")
                 .then((res) => {
                     commit("setAssets", res.data);
-                    // commit("clearSelectAsset")
+                    commit("clearSelectAsset")
                 })
                 .catch(() => {
                     commit("setAssets", null);

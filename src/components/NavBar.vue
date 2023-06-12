@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="primary">
+  <v-app-bar color="secondary">
     <v-app-bar-nav-icon @click="changeDrawer"></v-app-bar-nav-icon>
     <!-- <v-img
       class="mx-2"
@@ -12,20 +12,28 @@
     <template v-slot:append>
       <v-menu>
         <template v-slot:activator="{ props }">
-          <v-btn color="primary" v-bind="props">
+          <!-- <v-btn color="primary" v-bind="props">
             <v-avatar :image="require('@/assets/logo.png')">
-              <!-- <span class="white--text text-h5">AD</span> -->
             </v-avatar>
-          </v-btn>
+          </v-btn> -->
+
+          <v-avatar
+            class="mr-3"
+            color="white"
+            v-bind="props"
+            style="cursor: pointer"
+          >
+            AD
+          </v-avatar>
         </template>
         <v-list>
-          <v-list-item link class="mx-2">
+          <!-- <v-list-item>
             <v-list-item-title>
               <v-icon>mdi-account-settings</v-icon>
               Configuración</v-list-item-title
             >
-          </v-list-item>
-          <v-list-item link class="mx-2" @click="logout">
+          </v-list-item> -->
+          <v-list-item @click="logout">
             <v-list-item-title>
               <v-icon>mdi-exit-to-app</v-icon> Cerrar Sesión</v-list-item-title
             >

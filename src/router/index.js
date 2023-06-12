@@ -8,6 +8,7 @@ import Activos from "@/views/activos/Activos.vue"
 import DetailsActivos from "@/views/activos/DetailsActivos.vue";
 import CreateActivos from "@/views/activos/CreateActivos.vue"
 import { RouterView } from "vue-router";
+import hello from "@/views/hello/Hello.vue"
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.VUE_APP_API_URL;
@@ -21,6 +22,13 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+    children: [
+      {
+        path: "",
+        name: "Inicio",
+        component: hello
+      }
+    ]
   },
   {
     path: "/activos",

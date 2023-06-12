@@ -9,6 +9,7 @@ const myCustomLightTheme = {
     dark: false,
     colors: {
         background: '#ffffff',
+        surface: '#FFFFFF',
         primary: '#007bff',
         'primary-darken-1': '#3700B3',
         secondary: '#042552',
@@ -17,7 +18,7 @@ const myCustomLightTheme = {
         info: '#2196F3',
         success: '#4CAF50',
         warning: '#FFB718',
-        navbar: '#f7f7f7'
+        navbar: '#F1F1F1'
     },
 }
 

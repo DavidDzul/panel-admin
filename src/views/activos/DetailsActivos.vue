@@ -4,7 +4,7 @@
 
     <v-row class="pa-5">
       <v-col cols="12" md="6">
-        <span class="text-h6 font-weight-bold">N.º de control: </span>
+        <span class="text-h6 font-weight-bold">N.º Control: </span>
         <span class="text-h6 font-weight-regular">
           {{ selectAsset.controlNumber }}
         </span>
@@ -16,7 +16,11 @@
           </template>
           <v-list>
             <v-list-item @click="openPhotoUpload">
-              <v-list-item-title>Agregar Foto de Activo</v-list-item-title>
+              <v-list-item-title>Nueva foto de activo</v-list-item-title>
+            </v-list-item>
+            <v-divider></v-divider>
+            <v-list-item>
+              <v-list-item-title>Eliminar activo</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -37,7 +41,22 @@
       </v-expansion-panel>
 
       <v-expansion-panel>
-        <v-expansion-panel-title>Fotos </v-expansion-panel-title>
+        <v-expansion-panel-title
+          ><template v-slot:default="{ expanded }">
+            <v-row no-gutters> Fotos </v-row>
+            <v-fade-transition leave-absolute>
+              <v-btn
+                v-if="expanded"
+                class="text-none mr-5"
+                color="blue-darken-4"
+                variant="outlined"
+                @click="openPhotoUpload"
+              >
+                Nueva Foto
+              </v-btn>
+            </v-fade-transition>
+          </template>
+        </v-expansion-panel-title>
         <v-expansion-panel-text> <ActivosImages /> </v-expansion-panel-text>
       </v-expansion-panel>
 
@@ -58,7 +77,6 @@
     v-model="imageDialog"
     max-width="800px"
     persistent
-    @click:outside.stop="closePhotoDialog"
     @keydown.stop.esc="closePhotoDialog"
   >
     <v-card>

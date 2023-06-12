@@ -15,7 +15,7 @@
     </v-col>
     <v-col cols="3">
       <router-link :to="`/activos/form`">
-        <v-btn color="secondary"> AGREGAR ACTIVO </v-btn>
+        <v-btn color="primary"> AGREGAR ACTIVO </v-btn>
       </router-link>
     </v-col>
   </v-row>
@@ -119,13 +119,13 @@ export default {
         align: "start",
         key: "controlNumber",
         sortable: false,
-        title: "N.º de control",
+        title: "N.º Control",
       },
-      { key: "assetype", title: "Tipo" },
-      { key: "companyBrand", title: "Marca" },
-      { key: "personCharge", title: "Responsable" },
-      { key: "campus", title: "Sede" },
-      { align: "center", key: "actions", title: "Opciones" },
+      { key: "assetype", sortable: false, title: "Tipo" },
+      { key: "companyBrand", sortable: false, title: "Marca" },
+      { key: "personCharge", sortable: false, title: "Responsable" },
+      { key: "campus", sortable: false, title: "Sede" },
+      { align: "center", key: "actions", sortable: false, title: "Opciones" },
     ],
   }),
   methods: {
