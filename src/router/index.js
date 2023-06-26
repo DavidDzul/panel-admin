@@ -9,6 +9,7 @@ import DetailsActivos from "@/views/activos/DetailsActivos.vue";
 import CreateActivos from "@/views/activos/CreateActivos.vue"
 import { RouterView } from "vue-router";
 import hello from "@/views/hello/Hello.vue"
+import users from "@/views/users/Users.vue"
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.VUE_APP_API_URL;
@@ -57,6 +58,21 @@ const routes = [
     ]
   },
   {
+    path: "/usuarios",
+    name: "usuarios",
+    component: Home,
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: "",
+        name: "ListaUsuarios",
+        component: users
+      },
+    ]
+  },
+  {
     path: "/login",
     name: "login",
     component: Login,
@@ -72,6 +88,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+  document.title = 'Administración de Activos'
   if (to.matched.some(route => route.meta.requiresAuth)) {
     if (store.state.auth.token !== "") {
       if (store.state.auth.loggedIn) {

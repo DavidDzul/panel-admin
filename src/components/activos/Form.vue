@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    class="mx-auto"
-    prepend-icon="mdi-laptop"
-    :class="created == false ? 'elevation-0' : ''"
-  >
+  <v-card class="mx-auto elevation-0" prepend-icon="mdi-laptop">
     <template v-slot:title>
       <strong> {{ titleText }} </strong>
     </template>
@@ -12,29 +8,29 @@
         <v-row>
           <v-col cols="12" md="4">
             <v-text-field
+              variant="underlined"
               v-model="form.acquisitionDate"
               label="Fecha de adquisición"
               type="date"
-              required
             ></v-text-field>
           </v-col>
-
           <v-col cols="12" md="4">
             <v-text-field
+              variant="underlined"
               v-model="form.providerName"
               label="Nombre de proveedor"
-              required
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
+              variant="underlined"
               v-model="form.invoiceNumber"
               label="Número de factura"
-              required
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
             <v-autocomplete
+              variant="underlined"
               v-model="form.assetype"
               label="Tipo de bien"
               :items="listAssets"
@@ -44,41 +40,43 @@
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
+              variant="underlined"
               v-model="form.companyBrand"
               label="Marca"
-              required
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
+              variant="underlined"
               v-model="form.model"
               label="Modelo"
-              required
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="12">
             <v-textarea
+              variant="underlined"
               v-model="form.description"
+              rows="2"
               label="Descripción del bien"
-              required
             ></v-textarea>
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
+              variant="underlined"
               v-model="form.serialNumber"
               label="No. de serie"
-              required
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
+              variant="underlined"
               v-model="form.AcquisitionValue"
               label="Valor de adquisición"
-              required
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
             <v-autocomplete
+              variant="underlined"
               v-model="form.state"
               label="Estado fisico actual"
               :items="listStatus"
@@ -86,15 +84,19 @@
               item-value="value"
             ></v-autocomplete>
           </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="form.location"
-              label="Ubicación fisica del bien"
-              required
-            ></v-text-field>
-          </v-col>
+          <!-- <v-col cols="12" md="4">
+            <v-autocomplete
+              variant="underlined"
+              v-model="form.campus"
+              label="Sede"
+              :items="listSede"
+              item-title="name"
+              item-value="value"
+            ></v-autocomplete>
+          </v-col> -->
           <v-col cols="12" md="4">
             <v-autocomplete
+              variant="underlined"
               v-model="form.use"
               label="Uso"
               :items="listUse"
@@ -102,38 +104,41 @@
               item-value="value"
             ></v-autocomplete>
           </v-col>
+
           <v-col cols="12" md="4" v-if="form.use === 'OTHER'">
             <v-text-field
+              variant="underlined"
               v-model="form.otherUse"
               label="Otro uso"
-              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              variant="underlined"
+              v-model="form.location"
+              label="Ubicación fisica del bien"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
             <v-autocomplete
-              v-model="form.campus"
-              label="Sede"
-              :items="listSede"
-              item-title="name"
-              item-value="value"
-            ></v-autocomplete>
+              variant="underlined"
+              v-model="form.userId"
+              label="Nombre de persona responsable"
+              :items="users"
+              item-title="firstName"
+              item-value="id"
+            >
+            </v-autocomplete>
           </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="form.personCharge"
-              label="Nombre de Persona responsable"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="form.personPosition"
-              label="Puesto de Persona responsable"
-              required
-            ></v-text-field>
+          <v-col cols="12" md="12">
+            <v-textarea
+              variant="underlined"
+              v-model="form.observation"
+              rows="2"
+              label="Observaciones"
+            ></v-textarea>
           </v-col>
         </v-row>
-
         <v-row>
           <v-col cols="4" offset="8">
             <v-btn
@@ -154,35 +159,36 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "Form",
-  computed: {
-    items() {
-      return [
-        {
-          text: "Control de activos",
-          disabled: false,
-          to: "/activos",
-        },
-        {
-          text: "Nuevo activo",
-          disabled: true,
-          to: "/activos/form",
-        },
-      ];
+  props: {
+    asset: {
+      type: Object,
+      required: false,
     },
+  },
+  computed: {
     loading() {
       return this.$store.state.assets.loading;
     },
-    selectAsset() {
-      return this.$store.state.assets.selectAsset;
-    },
+    ...mapGetters("users", {
+      users: "getUsers",
+    }),
   },
   watch: {
     loading: function (val) {
       this.sendLoading = val;
     },
   },
+  // setup(props) {
+  //   watch(
+  //     () => props.asset,
+  //     (val) => {
+  //       console.log(val);
+  //     }
+  //   );
+  // },
   data: () => ({
     valid: false,
     created: true,
@@ -206,12 +212,7 @@ export default {
       { name: "Operativo", value: "OPERATIONAL" },
       { name: "Otro", value: "OTHER" },
     ],
-    listSede: [
-      { name: "Mérida", value: "MERIDA" },
-      { name: "Valladolid", value: "VALLADOLID" },
-      { name: "Tizimín", value: "TIZIMIN" },
-      { name: "Oxkutzcab", value: "OXKUTZCAB" },
-    ],
+
     form: {
       acquisitionDate: "",
       providerName: "",
@@ -226,9 +227,9 @@ export default {
       location: "",
       use: "",
       otherUse: "",
-      campus: "",
-      personCharge: "",
-      personPosition: "",
+      // campus: "",
+      userId: "",
+      observation: "",
     },
   }),
   methods: {
@@ -236,35 +237,37 @@ export default {
       if (this.created) {
         await this.$store.dispatch("assets/createAsset", this.form);
       } else {
-        Object.assign(this.form, { id: this.selectAsset.id });
+        Object.assign(this.form, { id: this.asset.id });
         await this.$store.dispatch("assets/updateAsset", this.form);
       }
     },
   },
   mounted() {
     setTimeout(() => {
-      if (Object.keys(this.selectAsset).length) {
+      if (this.asset) {
         this.txtBtn = "ACTUALIZAR";
-        this.titleText = "Actualizar Activo";
+        this.titleText = "ACTUALIZAR ACTIVO";
         this.created = false;
-        this.form.acquisitionDate = this.selectAsset.acquisitionDate;
-        this.form.providerName = this.selectAsset.providerName;
-        this.form.invoiceNumber = this.selectAsset.invoiceNumber;
-        this.form.assetype = this.selectAsset.assetype;
-        this.form.companyBrand = this.selectAsset.companyBrand;
-        this.form.model = this.selectAsset.model;
-        this.form.description = this.selectAsset.description;
-        this.form.serialNumber = this.selectAsset.serialNumber;
-        this.form.AcquisitionValue = this.selectAsset.AcquisitionValue;
-        this.form.state = this.selectAsset.state;
-        this.form.location = this.selectAsset.location;
-        this.form.use = this.selectAsset.use;
-        this.form.otherUse = this.selectAsset.otherUse;
-        this.form.campus = this.selectAsset.campus;
-        this.form.personCharge = this.selectAsset.personCharge;
-        this.form.personPosition = this.selectAsset.personPosition;
+        this.form.acquisitionDate = this.asset.acquisitionDate;
+        this.form.providerName = this.asset.providerName;
+        this.form.invoiceNumber = this.asset.invoiceNumber;
+        this.form.assetype = this.asset.assetype;
+        this.form.companyBrand = this.asset.companyBrand;
+        this.form.model = this.asset.model;
+        this.form.description = this.asset.description;
+        this.form.serialNumber = this.asset.serialNumber;
+        this.form.AcquisitionValue = this.asset.AcquisitionValue;
+        this.form.state = this.asset.state;
+        this.form.location = this.asset.location;
+        this.form.use = this.asset.use;
+        this.form.otherUse = this.asset.otherUse;
+        this.form.userId = this.asset.id_user;
+        this.form.observation = this.asset.observation;
+        // this.form.campus = this.asset.campus;
+        // this.form.personCharge = this.asset.personCharge;
+        // this.form.personPosition = this.asset.personPosition;
       } else {
-        this.titleText = "Agregar Nuevo Activo";
+        this.titleText = "AGREGAR ACTIVO";
       }
     }, "500");
   },

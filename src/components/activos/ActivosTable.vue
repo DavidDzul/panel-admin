@@ -20,36 +20,51 @@
     </v-col>
   </v-row>
   <br />
-  <v-data-table
+
+  <v-data-table-server
     :headers="headers"
     :items="assets"
-    :search="search"
-    :loading="loading"
+    item-value="name"
     class="elevation-1"
-    density="compact"
+    :loading="loading"
+    :items-length="assets.length"
   >
     <template v-slot:item.assetype="{ item }">
       {{
-        (item = "EQUIPMENT"
+        item.columns.assetype == "EQUIPMENT"
           ? "Equipo de Cómputo"
-          : (item = "FURNITURE"
-              ? "Mobiliario y Equipo de Oficina"
-              : (item = "EVENTS"
-                  ? "Equipo para eventos"
-                  : (item = "AUDIO" ? "Equipo de Audio" : ""))))
+          : item.columns.assetype == "FURNITURE"
+          ? "Mobiliario y Equipo de Oficina"
+          : item.columns.assetype == "EVENTS"
+          ? "Equipo para eventos"
+          : item.columns.assetype == "AUDIO"
+          ? "Equipo de Audio"
+          : ""
       }}
     </template>
-    <template v-slot:item.campus="{ item }">
+
+    <template #[`item.userName`]="{ item }">
       {{
-        (item = "MERIDA"
-          ? "Mérida"
-          : (item = "OXKUTZCAB"
-              ? "Oxkutzcab"
-              : (item = "TIZIMIN"
-                  ? "Tizimín"
-                  : (item = "VALLADOLID" ? "Valladolid" : ""))))
+        item.value.user
+          ? item.value.user.firstName + " " + item.value.user.lastName
+          : "Disponible"
       }}
     </template>
+
+    <!-- <template #[`item.userCampus`]="{ item }">
+      {{
+        item.value.user.campus == "MERIDA"
+          ? "Mérida"
+          : item.value.user.campus == "OXKUTZCAB"
+          ? "Oxkutzcab"
+          : item.value.user.campus == "TIZIMIN"
+          ? "Tizimín"
+          : item.value.user.campus == "VALLADOLID"
+          ? "Valladolid"
+          : ""
+      }}
+    </template> -->
+
     <template #[`item.actions`]="{ item }">
       <v-tooltip text="Ver detalles" location="bottom">
         <template v-slot:activator="{ props }">
@@ -60,17 +75,6 @@
           </router-link>
         </template>
       </v-tooltip>
-      <!-- <v-tooltip text="Editar" location="bottom">
-        <template v-slot:activator="{ props }">
-          <v-btn
-            icon
-            variant="text"
-            v-bind="props"
-            @click="selectAsset(item.props.title)"
-            ><v-icon small> mdi-pencil</v-icon></v-btn
-          >
-        </template>
-      </v-tooltip> -->
       <v-tooltip text="Eliminar" location="bottom">
         <template v-slot:activator="{ props }">
           <v-btn
@@ -88,7 +92,8 @@
         </template>
       </v-tooltip>
     </template>
-  </v-data-table>
+  </v-data-table-server>
+
   <ConfirmationDialog ref="confirmationDialog" />
 </template>
 
@@ -99,7 +104,7 @@ import ConfirmationDialog from "../helpers/ConfirmationDialog.vue";
 import { deleteAssetTitle, deleteAssetBody } from "@/constants";
 
 export default {
-  name: "Activos",
+  name: "ActivosTable",
   components: { ConfirmationDialog },
   props: {
     assets: {
@@ -123,8 +128,8 @@ export default {
       },
       { key: "assetype", sortable: false, title: "Tipo" },
       { key: "companyBrand", sortable: false, title: "Marca" },
-      { key: "personCharge", sortable: false, title: "Responsable" },
-      { key: "campus", sortable: false, title: "Sede" },
+      { key: "userName", sortable: false, title: "Responsable" },
+      // { key: "userCampus", sortable: false, title: "Sede" },
       { align: "center", key: "actions", sortable: false, title: "Opciones" },
     ],
   }),

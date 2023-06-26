@@ -6,19 +6,21 @@ axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 const assets = {
     namespaced: true,
     state: {
-        entities: null | [],
+        entities: null || [],
         loading: false,
-        selectAsset: null | [],
+        selectAsset: null || [],
         created: false,
         showAddImage: false,
         loadingImage: false,
+        showAddFile: false,
+        loadingFile: false,
     },
     getters: {
         getAssets(state) {
             return Object.keys(state.entities)
                 .map(Number)
                 .map((key) => state.entities[key]) || [];
-        }
+        },
     },
     actions: {
         async fetchAssets({ commit }) {
@@ -96,23 +98,6 @@ const assets = {
                 });
             commit("clearLoading");
         },
-        async deleteAsset({ commit }, id) {
-            commit("setLoading");
-            await axios
-                .delete(`api/deleteAsset/${id}`)
-                .then((res) => {
-                    commit("removeAsset", id)
-                    commit("alert/setAlert",
-                        { message: res.data.msg, status: "success" },
-                        { root: true });
-                })
-                .catch(() => {
-                    commit("alert/setAlert",
-                        { message: 'Error al eliminar', status: "error" },
-                        { root: true });
-                });
-            commit("clearLoading");
-        },
         async createImage({ commit }, data) {
             commit("setLoadingImage");
             await axios
@@ -132,7 +117,7 @@ const assets = {
                 })
                 .catch(() => {
                     commit("alert/setAlert",
-                        { message: 'Error al eliminar', status: "error" },
+                        { message: 'Error en el servidor', status: "error" },
                         { root: true });
                 });
             commit("clearLoadingImage");
@@ -153,6 +138,31 @@ const assets = {
                         { root: true });
                 });
             commit("clearLoadingImage");
+        },
+        async createFile({ commit }, data) {
+            commit("setLoadingFile");
+            await axios
+                .post("api/createFile", data, {
+                    headers: {
+                        'accept': 'application/json',
+                        'Accept-Language': 'en-US,en;q=0.8',
+                        'content-type': 'multipart/form-data',
+                    }
+                })
+                .then((res) => {
+                    console.log(res.data)
+                    // commit("addAssetImage", res.data.image)
+                    commit("closeAddFileDialog")
+                    commit("alert/setAlert",
+                        { message: res.data.msg, status: "success" },
+                        { root: true });
+                })
+                .catch(() => {
+                    commit("alert/setAlert",
+                        { message: 'Error en el servidor', status: "error" },
+                        { root: true });
+                });
+            commit("clearLoadingFile");
         },
     },
     mutations: {
@@ -217,6 +227,18 @@ const assets = {
                     }),
                 };
             }
+        },
+        showAddFileDialog(state) {
+            state.showAddFile = true;
+        },
+        closeAddFileDialog(state) {
+            state.showAddFile = false;
+        },
+        setLoadingFile(state) {
+            state.loadingFile = true;
+        },
+        clearLoadingFile(state) {
+            state.loadingFile = false;
         },
     },
 };

@@ -4,6 +4,7 @@ import * as components from 'vuetify/components'
 import * as labsComponents from 'vuetify/labs/components'
 import * as Vue from 'vue';
 import * as VueRouter from 'vue-router';
+import { es } from 'vuetify/locale'
 
 const myCustomLightTheme = {
     dark: false,
@@ -23,6 +24,13 @@ const myCustomLightTheme = {
 }
 
 export default createVuetify({
+    locale: {
+        locale: 'es',
+        messages: { es },
+        rtl: {
+            customLocale: true
+        }
+    },
     components: {
         ...components,
         ...labsComponents,

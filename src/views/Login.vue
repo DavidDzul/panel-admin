@@ -11,30 +11,35 @@
                   class="mx-auto"
                   :src="require('@/assets/logo.png')"
                 ></v-img>
-                <v-card-title class="title-form">
+                <v-card-title class="title-form pb-5">
                   CONTROL DE ACTIVOS
                 </v-card-title>
                 <v-sheet class="mx-auto">
-                  <v-form fast-fail @submit.prevent="login">
-                    <br />
-                    <v-text-field
-                      v-model="form.email"
-                      label="Correo electrónico"
-                      :rules="validateEmail"
-                    ></v-text-field>
-
-                    <v-text-field
-                      v-model="form.password"
-                      :append-inner-icon="pass ? 'mdi-eye' : 'mdi-eye-off'"
-                      :type="pass ? 'text' : 'password'"
-                      label="Contraseña"
-                      @click:append-inner="pass = !pass"
-                    ></v-text-field>
-
+                  <Form :validation-schema="schema" @submit="login">
+                    <Field name="email" v-slot="{ field, errors }">
+                      <v-text-field
+                        v-model="form.email"
+                        label="Correo electrónico"
+                        v-bind="field"
+                        :error-messages="errors"
+                        class="pb-1"
+                      ></v-text-field>
+                    </Field>
+                    <Field name="password" v-slot="{ field, errors }">
+                      <v-text-field
+                        v-model="form.password"
+                        :append-inner-icon="pass ? 'mdi-eye' : 'mdi-eye-off'"
+                        :type="pass ? 'text' : 'password'"
+                        label="Contraseña"
+                        @click:append-inner="pass = !pass"
+                        v-bind="field"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </Field>
                     <v-btn type="submit" color="primary" block class="mt-2"
                       >INICIAR SESIÓN</v-btn
                     >
-                  </v-form>
+                  </Form>
                 </v-sheet>
               </v-card-text>
             </v-card>
@@ -52,11 +57,15 @@
 import { mapActions } from "vuex";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import Alert from "@/components/helpers/Alert.vue";
+import { Field, Form } from "vee-validate";
+import * as yup from "yup";
 
 export default {
   components: {
     LoadingOverlay,
     Alert,
+    Field,
+    Form,
   },
   computed: {
     loading() {
@@ -69,23 +78,17 @@ export default {
       email: "",
       password: "",
     },
+    schema: yup.object({
+      email: yup
+        .string()
+        .required("El correo electrónico es requerido")
+        .email("Correo electrónico invalido"),
+      password: yup.string().required("La contraseña es requerida"),
+    }),
   }),
   methods: {
     async login() {
       await this.$store.dispatch("auth/login", this.form);
-    },
-    validateEmail(value) {
-      // if the field is empty
-      if (!value) {
-        return "This field is required";
-      }
-      // if the field is not a valid email
-      const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-      if (!regex.test(value)) {
-        return "This field must be a valid email";
-      }
-      // All is good
-      return true;
     },
   },
 };

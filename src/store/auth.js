@@ -1,5 +1,6 @@
 import axios from "axios";
 import router from "@/router";
+import store from "@/store";
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 
@@ -13,7 +14,7 @@ const auth = {
     },
     getters: {},
     mutations: {
-        setUser(state, user) {
+        userLoad(state, user) {
             state.user = user;
             state.loggedIn = Boolean(user);
             state.token = localStorage.getItem("token") || "";
@@ -21,7 +22,7 @@ const auth = {
         openLoading(state) {
             state.loading = true;
         },
-        closeLoading(state) {
+        removeLoad(state) {
             state.loading = false;
         }
     },
@@ -37,32 +38,33 @@ const auth = {
                 commit("alert/setAlert",
                     { message: "Credenciales incorrectas", status: "error" },
                     { root: true });
-                commit("closeLoading");
+                commit("removeLoad");
             });
         },
         async logout({ commit }) {
             commit("openLoading", null, { root: true });
             await axios.post("api/logout").then(async () => {
                 localStorage.removeItem('token')
-                commit("setUser", null);
+                commit("userLoad", null);
                 await router.push({ path: "/login" });
                 commit("closeLoading", null, { root: true });
             }).catch(() => {
                 commit("closeLoading", null, { root: true });
             });
         },
-        async getProfile({ commit }, token) {
+        async getProfile({ dispatch, commit }, token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
             await axios.get("sanctum/csrf-cookie");
             await axios
                 .get("api/user")
-                .then((res) => {
-                    commit("setUser", res.data);
+                .then(async (res) => {
+                    commit("userLoad", res.data);
+                    await store.dispatch("users/fetchUsers");
                 })
                 .catch(() => {
-                    commit("setUser", null);
+                    commit("userLoad", null);
                 });
-            commit("closeLoading");
+            commit("removeLoad");
         },
     },
 };

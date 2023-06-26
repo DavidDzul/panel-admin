@@ -10,7 +10,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import ActivosTable from "@/components/activos/ActivosTable.vue";
 import Breadcrumbs from "@/components/helpers/Breadcrumbs.vue";
 export default {
-  name: "Home",
+  name: "Activos",
   components: {
     ActivosTable,
     Breadcrumbs,

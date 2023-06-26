@@ -57,6 +57,11 @@ export default {
         link: "/",
       },
       {
+        text: "Equipo operativo",
+        icon: "mdi-account-multiple",
+        link: "/usuarios",
+      },
+      {
         text: "Control de activos",
         icon: "mdi-laptop",
         link: "/activos",
