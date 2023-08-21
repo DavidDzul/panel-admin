@@ -50,7 +50,7 @@
         </template></v-expansion-panel-title
       >
       <v-expansion-panel-text>
-        Documentos
+        <ActivosFiles />
 
         <ActivosFilesDialog @close="closeAddFileDialog" />
       </v-expansion-panel-text>
@@ -94,6 +94,8 @@ import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import Form from "@/components/activos/Form.vue";
 import ActivosImages from "@/components/activos/ActivosImages.vue";
 import ActivosFilesDialog from "@/components/activos/ActivosFilesDialog.vue";
+import ActivosFiles from "@/components/activos/ActivosFiles.vue";
+
 export default {
   name: "ActivosDetailsPanels",
   props: {
@@ -107,6 +109,7 @@ export default {
     Form,
     ActivosImages,
     ActivosFilesDialog,
+    ActivosFiles,
   },
   computed: {
     showPhotoDialog() {

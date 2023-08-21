@@ -150,8 +150,7 @@ const assets = {
                     }
                 })
                 .then((res) => {
-                    console.log(res.data)
-                    // commit("addAssetImage", res.data.image)
+                    commit("addAssetFile", res.data.file)
                     commit("closeAddFileDialog")
                     commit("alert/setAlert",
                         { message: res.data.msg, status: "success" },
@@ -239,6 +238,21 @@ const assets = {
         },
         clearLoadingFile(state) {
             state.loadingFile = false;
+        },
+        addAssetFile(state, file) {
+            if (state.selectAsset) {
+                state.selectAsset = {
+                    ...state.selectAsset,
+                    files: [file, ...state.selectAsset.files],
+                };
+
+                // if (state.entities) {
+                //     state.entities[state.selectAsset.id] = {
+                //         ...state.entities[state.selectAsset.id],
+                //         files: [file, ...state.entities[state.selectAsset.id].files],
+                //     };
+                // }
+            }
         },
     },
 };

@@ -51,20 +51,6 @@
       }}
     </template>
 
-    <!-- <template #[`item.userCampus`]="{ item }">
-      {{
-        item.value.user.campus == "MERIDA"
-          ? "Mérida"
-          : item.value.user.campus == "OXKUTZCAB"
-          ? "Oxkutzcab"
-          : item.value.user.campus == "TIZIMIN"
-          ? "Tizimín"
-          : item.value.user.campus == "VALLADOLID"
-          ? "Valladolid"
-          : ""
-      }}
-    </template> -->
-
     <template #[`item.actions`]="{ item }">
       <v-tooltip text="Ver detalles" location="bottom">
         <template v-slot:activator="{ props }">
@@ -129,7 +115,6 @@ export default {
       { key: "assetype", sortable: false, title: "Tipo" },
       { key: "companyBrand", sortable: false, title: "Marca" },
       { key: "userName", sortable: false, title: "Responsable" },
-      // { key: "userCampus", sortable: false, title: "Sede" },
       { align: "center", key: "actions", sortable: false, title: "Opciones" },
     ],
   }),

@@ -84,16 +84,6 @@
               item-value="value"
             ></v-autocomplete>
           </v-col>
-          <!-- <v-col cols="12" md="4">
-            <v-autocomplete
-              variant="underlined"
-              v-model="form.campus"
-              label="Sede"
-              :items="listSede"
-              item-title="name"
-              item-value="value"
-            ></v-autocomplete>
-          </v-col> -->
           <v-col cols="12" md="4">
             <v-autocomplete
               variant="underlined"
@@ -181,14 +171,6 @@ export default {
       this.sendLoading = val;
     },
   },
-  // setup(props) {
-  //   watch(
-  //     () => props.asset,
-  //     (val) => {
-  //       console.log(val);
-  //     }
-  //   );
-  // },
   data: () => ({
     valid: false,
     created: true,
@@ -263,9 +245,6 @@ export default {
         this.form.otherUse = this.asset.otherUse;
         this.form.userId = this.asset.id_user;
         this.form.observation = this.asset.observation;
-        // this.form.campus = this.asset.campus;
-        // this.form.personCharge = this.asset.personCharge;
-        // this.form.personPosition = this.asset.personPosition;
       } else {
         this.titleText = "AGREGAR ACTIVO";
       }
