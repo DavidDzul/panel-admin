@@ -4,29 +4,41 @@
       <strong> {{ titleText }} </strong>
     </template>
     <v-card-text>
-      <v-form v-model="valid" class="mx-5 my-5" @submit.prevent="submit">
+      <Form :validation-schema="schema" class="mx-5 my-5" @submit="submit">
         <v-row>
           <v-col cols="12" md="4">
-            <v-text-field
-              variant="underlined"
-              v-model="form.acquisitionDate"
-              label="Fecha de adquisición"
-              type="date"
-            ></v-text-field>
+            <Field name="acquisitionDate" v-slot="{ field, errors }">
+              <v-text-field
+                variant="underlined"
+                v-model="form.acquisitionDate"
+                label="Fecha de adquisición"
+                type="date"
+                v-bind="field"
+                :error-messages="errors"
+              ></v-text-field>
+            </Field>
           </v-col>
           <v-col cols="12" md="4">
-            <v-text-field
-              variant="underlined"
-              v-model="form.providerName"
-              label="Nombre de proveedor"
-            ></v-text-field>
+            <Field name="providerName" v-slot="{ field, errors }">
+              <v-text-field
+                variant="underlined"
+                v-model="form.providerName"
+                label="Nombre de proveedor"
+                v-bind="field"
+                :error-messages="errors"
+              ></v-text-field>
+            </Field>
           </v-col>
           <v-col cols="12" md="4">
-            <v-text-field
-              variant="underlined"
-              v-model="form.invoiceNumber"
-              label="Número de factura"
-            ></v-text-field>
+            <Field name="invoiceNumber" v-slot="{ field, errors }">
+              <v-text-field
+                variant="underlined"
+                v-model="form.invoiceNumber"
+                label="Número de factura"
+                v-bind="field"
+                :error-messages="errors"
+              ></v-text-field>
+            </Field>
           </v-col>
           <v-col cols="12" md="4">
             <v-autocomplete
@@ -72,6 +84,7 @@
               variant="underlined"
               v-model="form.AcquisitionValue"
               label="Valor de adquisición"
+              @input="formatCurrency"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
@@ -143,15 +156,22 @@
             </v-btn>
           </v-col>
         </v-row>
-      </v-form>
+      </Form>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { Field, Form } from "vee-validate";
+import * as yup from "yup";
+
 export default {
-  name: "Form",
+  name: "FormAsset",
+  components: {
+    Field,
+    Form,
+  },
   props: {
     asset: {
       type: Object,
@@ -194,7 +214,6 @@ export default {
       { name: "Operativo", value: "OPERATIONAL" },
       { name: "Otro", value: "OTHER" },
     ],
-
     form: {
       acquisitionDate: "",
       providerName: "",
@@ -213,6 +232,25 @@ export default {
       userId: "",
       observation: "",
     },
+    schema: yup.object({
+      acquisitionDate: yup
+        .string()
+        .required("La fecha de adquisición es requerida"),
+      providerName: yup
+        .string()
+        .required("El nombre de proveedor es requerido"),
+      invoiceNumber: yup.string().required("El número de factura es requerido"),
+      // assetype: yup.required("El tipo de bien es requerido"),
+      // companyBrand: yup.required("La marca es requerida"),
+      // model: yup.required("El modelo es requerido"),
+      // description: yup.required("La descripción del bien es requerida"),
+      // serialNumber: yup.required("El No. de serie requerido"),
+      // AcquisitionValue: yup.required("El valor de adquisición es requerido"),
+      // state: yup.required("El estado fisico actual es requerido"),
+      // location: yup.required("La ubicación fisica del bien es requerida"),
+      // use: yup.required("El uso es requerido"),
+      // campus: yup.required("El correo electrónico es requerido"),
+    }),
   }),
   methods: {
     async submit() {
@@ -222,6 +260,31 @@ export default {
         Object.assign(this.form, { id: this.asset.id });
         await this.$store.dispatch("assets/updateAsset", this.form);
       }
+    },
+    formatCurrency(event) {
+      let value = event.target.value;
+
+      // Remove all non-digit characters except dots
+      value = value.replace(/[^\d.]/g, "");
+
+      // Replace multiple dots with a single dot
+      value = value.replace(/\.{2,}/g, ".");
+
+      // Split into integer and decimal parts
+      const parts = value.split(".");
+      let integerPart = parts[0] || "";
+      let decimalPart = parts[1] || "";
+
+      // Add commas for thousands separator to the integer part
+      integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+      // Limit decimal part to 2 digits
+      decimalPart = decimalPart.slice(0, 2);
+
+      // Update the formatted value
+      this.form.AcquisitionValue = decimalPart
+        ? integerPart + "." + decimalPart
+        : integerPart;
     },
   },
   mounted() {
