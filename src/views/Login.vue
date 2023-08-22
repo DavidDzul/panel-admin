@@ -12,7 +12,7 @@
                   :src="require('@/assets/logo.png')"
                 ></v-img>
                 <v-card-title class="title-form pb-5">
-                  CONTROL DE ACTIVOS
+                  DPTO. ADMINISTRACIÓN
                 </v-card-title>
                 <v-sheet class="mx-auto">
                   <Form :validation-schema="schema" @submit="login">
