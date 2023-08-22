@@ -1,6 +1,7 @@
 // Assets dialog
 
 export const API_URL = "http://localhost:8000/";
+// export const API_URL = "http://api-panel.iu.org.mx/";
 
 export const deleteAssetTitle = "Eliminar activo";
 export const deleteAssetBody = (controlNumber) =>

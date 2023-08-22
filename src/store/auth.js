@@ -1,8 +1,10 @@
 import axios from "axios";
 import router from "@/router";
 import store from "@/store";
+import { API_URL } from "@/constants";
+
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = process.env.VUE_APP_API_URL;
+axios.defaults.baseURL = API_URL;
 
 const auth = {
     namespaced: true,

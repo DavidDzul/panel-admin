@@ -1,7 +1,9 @@
 import axios from "axios";
 import router from "@/router";
+import { API_URL } from "@/constants";
+
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = process.env.VUE_APP_API_URL;
+axios.defaults.baseURL = API_URL;
 
 const assets = {
     namespaced: true,
@@ -28,7 +30,7 @@ const assets = {
             await axios
                 .get("api/fetchAssets")
                 .then((res) => {
-                    commit("setAssets", res.data);
+                    commit("setAssets", res.data.assets);
                     commit("clearSelectAsset")
                 })
                 .catch(() => {
@@ -209,12 +211,12 @@ const assets = {
                     images: [image, ...state.selectAsset.images],
                 };
 
-                if (state.entities) {
-                    state.entities[state.selectAsset.id] = {
-                        ...state.entities[state.selectAsset.id],
-                        images: [image, ...state.entities[state.selectAsset.id].images],
-                    };
-                }
+                // if (state.entities) {
+                //     state.entities[state.selectAsset.id] = {
+                //         ...state.entities[state.selectAsset.id],
+                //         images: [image, ...state.entities[state.selectAsset.id].images],
+                //     };
+                // }
             }
         },
         deleteAssetImage(state, image) {

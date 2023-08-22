@@ -21,7 +21,7 @@
   </v-row>
   <br />
 
-  <v-data-table-server
+  <v-data-table
     :headers="headers"
     :items="assets"
     item-value="name"
@@ -78,7 +78,7 @@
         </template>
       </v-tooltip>
     </template>
-  </v-data-table-server>
+  </v-data-table>
 
   <ConfirmationDialog ref="confirmationDialog" />
 </template>
